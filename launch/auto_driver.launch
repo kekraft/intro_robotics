@@ -1,0 +1,13 @@
+<launch>
+
+  <!-- Turtlebot stage and rviz launch -->
+
+  <include file="$(find turtlebot_stage)/launch/turtlebot_in_stage.launch"/>
+
+  <!-- My auto driver code -->
+  <node pkg="exercise1" type="auto_driver.py" name="auto_driver" output="screen" launch-prefix="gnome-terminal --command" required="True">
+    <param name="home_x" value="2.01"></param>
+    <param name="home_y" value="2.00"></param>
+  </node>
+
+</launch>

@@ -1,0 +1,21 @@
+<launch>
+  
+
+  <!-- Turtlebot stage and rviz launch -->
+  <include file="$(find turtlebot_stage)/launch/turtlebot_in_stage.launch"/>
+
+  <!-- turtlebot_teleop_key already has its own built in velocity smoother 
+      Different name remapper so that I can filter it with the stopper code  -->
+  <node pkg="turtlebot_teleop" type="turtlebot_teleop_key" name="turtlebot_teleop_keyboard"  output="screen">
+    <param name="scale_linear" value="0.5" type="double"/>
+    <param name="scale_angular" value="1.5" type="double"/>
+    <remap from="turtlebot_teleop_keyboard/cmd_vel" to="cmd_vel_mux/input_unfiltered/teleop"/>
+  </node>
+
+  <!-- My own guarder code -->
+  <node pkg="exercise1" type="guarder.py" name="guard" output="screen">
+    <param name="stop_dist" value="0.5"></param> 
+  </node>
+
+
+</launch>
