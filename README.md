@@ -31,7 +31,8 @@ The robot drives around and places markers on the circular objects in the world 
 
 To teleop the robot using standard teleop controls:
 
-  roslaunch exercise1 teleop_circle_detection.launch
+  terminal 1) roslaunch exercise1 teleop_circle_detection.launch
+  terminal 2) roslaunch turtlebot_teleop keyboard_teleop.launch
 
 To use frontier exploration:
   
