@@ -7,12 +7,13 @@ import rospy
 from std_msgs.msg import *
 from geometry_msgs.msg import Pose, Quaternion, Point, Vector3
 from sensor_msgs.msg import LaserScan
-from visualization_msgs.msg import MarkerArray
+from visualization_msgs.msg import Marker, MarkerArray
 
 from math import sin,cos,atan2,pi,sqrt
 import matplotlib.pyplot as plt
 
 ## for ellipse fitting
+import numpy as np
 from ellipse2d import Ellipse2d
 from sklearn.cluster import DBSCAN
 from sklearn.neighbors import NearestNeighbors
@@ -30,8 +31,10 @@ class CircleDetector:
         # self.green = ColorRGBA(0, 1, 0, 1)
         # self.color = self.red
 
-        self.scan_sub = rospy.Subscriber(laser_topic, LaserScan, self.fit_ellipse)
+        self.scan_sub = rospy.Subscriber(laser_topic, LaserScan, self.laser_cb)
         self.marker_array_pub = rospy.Publisher("circle_marker_array", MarkerArray, queue_size=10)
+
+        print "Instantiated circle detector"
 
 
 
@@ -46,11 +49,12 @@ class CircleDetector:
         markers = []
         if ellipses is not None:
             for ellipse in ellipses:
+                print "Found ellipse"
                 marker = self.create_circle_marker(ellipse.center[0], ellipse.center[1], ellipse.theta, ellipse.a, ellipse.b)
                 markers.append(marker)
 
         # place markers
-        self.marker_array_pub(markers)
+        self.marker_array_pub.publish(markers)
 
 
     # Fit an ellipse to the data
@@ -104,16 +108,16 @@ class CircleDetector:
             #add all valid ranges to some xy range
             if r < max_range:
                 points.append([cos(angle)*r, sin(angle)*r])
-            angle+=incr
+            angle += incr
 
         #eps = range, min_samples = min# of points in cluster.
-        points = numpy.asarray(points)
+        points = np.asarray(points)
         if len(points) > 3:
             db = DBSCAN(eps=0.5, min_samples=3).fit(points)
         else:
             return None
 
-        #core_samples_mask = numpy.zeros_like(db.labels_, dtype=bool)
+        #core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
         #core_samples_mask[db.core_sample_indices_] = True
         labels = db.labels_
         #return points, labels
@@ -124,19 +128,30 @@ class CircleDetector:
         for n in xrange(n_clusters):
             xy = points[labels==n]
             e = Ellipse2d()
-            e.fit(xy)
-            if is_valid_ellipse(e):
-                new_ellipses.append(e)
+            try:
+                e.fit(xy)
+                print e
+                if self.is_valid_ellipse(e):
+                    print "  valid ellipse"
+                    new_ellipses.append(e)
+            except:
+                pass
 
+        print "Number ellipses found: ", len(new_ellipses)
         return new_ellipses
             
         
     def is_valid_ellipse(self, ellipse):
         # Validity is measured by it being a real ellipse, with 
         #   values in the plausible range for representing a human
-        if (ellipse.is_valid() and 
-            (self.min_size < ellipse.a < self.max_size) and 
-            (min_size < ellipse.b < max_size)):
+        # if (ellipse.is_valid() and 
+        #     (self.min_size < ellipse.a < self.max_size) and 
+        #     (min_size < ellipse.b < max_size)):
+        #     return True
+        # else:
+        #     return False
+
+        if ellipse.is_valid():
             return True
         else:
             return False
@@ -172,6 +187,6 @@ if __name__ == '__main__':
     axis_alpha = 1.0 #rospy.get_param("~axis_alpha")
     axis_center = 1.0 #rospy.get_param("~axis_center")
 
-    detector = CircleDetector(max_size, min_size, axis_alpha, axis_center)
+    detector = CircleDetector(max_size, min_size, axis_alpha, axis_center, "/scan")
     
     rospy.spin()
