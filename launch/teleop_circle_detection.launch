@@ -11,17 +11,15 @@
 		<arg name="world_file" value="$(arg world_file)"/>
 	</include>
 
-	<!-- Frontier exploration package -->
-	<!-- <include file="$(find exercise1)/launch/tb_frontier_explore.launch"/> -->
 
   	<!-- My circle detection code -->
-  	<!-- <node pkg="exercise1" type="circle_detector.py" name="circle_detector" output="screen"/> -->
+  	<node pkg="exercise1" type="circle_detector.py" name="circle_detector" output="screen"/>
 
- <!-- Include teleop for now -->
-  <!-- <node pkg="turtlebot_teleop" type="turtlebot_teleop_key" name="turtlebot_teleop_keyboard"  output="screen">
+ <!-- turtlebot teleop -->
+ <node pkg="turtlebot_teleop" type="turtlebot_teleop_key" name="turtlebot_teleop_keyboard"  output="screen" launch-prefix="gnome-terminal --command>
     <param name="scale_linear" value="0.5" type="double"/>
     <param name="scale_angular" value="1.5" type="double"/>
     <remap from="turtlebot_teleop_keyboard/cmd_vel" to="cmd_vel_mux/input_unfiltered/teleop"/>
-  </node> -->
+  </node>
 
 </launch>

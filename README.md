@@ -6,13 +6,54 @@ Class: ROB 514 Intro to Rob
 Date: 12/01/15
 Author: Kory Kraft
 
+*********************************
+**** Required dependencies *******
+**********************************
 
-scikit for nearest neighbors clustier in required.
-sudo pip install -U scikit-learn
+scikit and scipy for nearest neighbors clustier is required.
 
+  sudo pip install -U scikit-learn
+  sudo apt-get install python-numpy python-scipy 
 
-Purpose: 
+ros frontier exploration also required (aside from pre installed turtlebot stage)
+  
+  sudo apt-get install ros-indigo-frontier-exploration
+
+*********************************
+***** Purpose *******************
+*********************************
+
 The robot drives around and places markers on the circular objects in the world (from an overhead 2d perspective).
+
+********************************************
+***** Launching Instructions ***************
+*********************************************
+
+To teleop the robot using standard teleop controls:
+
+  roslaunch exercise1 teleop_circle_detection.launch
+
+To use frontier exploration:
+  
+  roslaunch exercise1 auto_circle_detection.launch
+
+This will then require the user to select a bounded polygon region for the robot using the publish point tool and a starting location for the robot. See http://wiki.ros.org/frontier_exploration for more details
+
+*********************************
+**** Known Issues ***************
+*********************************
+
+There are many false positives for circles. This is in part due to the weak circle requirement definitions in my fitting code.
+Also, the markers are not persistent. I was working on that (see the note at the top of circle_detector.py in the src folder) but I decided to call it "good enough."
+
+Having to draw the bounded box is a pain, but functional. This could/should be updated.
+
+
+
+
+
+
+
 
 
 

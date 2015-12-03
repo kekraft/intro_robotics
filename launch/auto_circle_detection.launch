@@ -1,0 +1,21 @@
+<launch>
+
+	<arg name="map_file"       default=" $(find exercise1)/extra/maze.yaml"/> 
+ 	<arg name="world_file"     default=" $(find exercise1)/extra/maze.world"/>
+ 	<arg name="rviz_config_file" default="$(find exercise1)/extra/exploration.rviz"/>
+
+	<!-- Turtlebot stage and rviz launch -->
+	<include file="$(find exercise1)/launch/turtlebot_custom_map_stage.launch">
+		<arg name="rviz_config_file" value="$(arg rviz_config_file)"/>
+		<arg name="map_file" value="$(arg map_file)"/>
+		<arg name="world_file" value="$(arg world_file)"/>
+	</include>
+
+	<!-- Frontier exploration package -->
+	<include file="$(find exercise1)/launch/tb_frontier_explore.launch"/>
+
+  	<!-- My circle detection code -->
+  	<node pkg="exercise1" type="circle_detector.py" name="circle_detector" output="screen"/>
+
+
+</launch>

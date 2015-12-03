@@ -1,6 +1,23 @@
 #!/usr/bin/env python
 '''
+Detects cirlces in the world with a radius less than 1 meter.
 
+Does a clustering algorithm on each individual laser scan array.
+Then does a ellipse fitting to each cluster.
+Each ellipse is assessed to see if its a valid circle.
+
+Markers are added for each valid circle, even if only seen once.
+The markers are not persistent at this point.
+
+Long term circle processing is in the works but did not get finished.
+This would require another clustering algorithm on the circle centers, which has been done.
+The tfs between the circle centers and map is the part that has been left undone.
+
+This script requires ski-learn and scipy.
+
+Author: Kory Kraft
+Date: 12/2/15
+License: BSD New
 '''
 
 import rospy
